@@ -26,22 +26,15 @@ namespace Tan4ik
 
         float rotation=0,rotationc=0, scale=1.0f, depth=1.0f, quadm;
         int w, h, flag = 0;
-        bool ok, f = false;
+        bool ok;
         DateTime prevdt=DateTime.Now;
         SpriteFont spr;
-
-        NetworkSessionProperties searchProperties = null;
-        AvailableNetworkSessionCollection availableSessions;
-        AvailableNetworkSession availableSession;
-        NetworkSession session;
-        int sessionIndex = 0;
 
 
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-            Components.Add(new GamerServicesComponent(this));
             w = graphics.PreferredBackBufferWidth = 800;
             h = graphics.PreferredBackBufferHeight = 600;
         }
@@ -102,94 +95,7 @@ namespace Tan4ik
             return new Vector3(x, y, z);
         }
 
-        static protected void SignIn()
-        {
-            if (!Guide.IsVisible)
-                Guide.ShowSignIn(1, true);
-        }
-
-        void HostGame()
-        {
-            if (SignedInGamer.SignedInGamers.Count == 0)
-                SignIn();
-
-            else if (SignedInGamer.SignedInGamers.Count == 1)
-            {
-                NetworkSessionProperties sessionProperties = new NetworkSessionProperties();
-
-                int maximumGamers = 2;  // The maximum supported is 31
-                int privateGamerSlots = 0;
-                int maximumLocalPlayers = 1;
-
-
-                // Create the session
-                session = NetworkSession.Create(
-                    NetworkSessionType.PlayerMatch,
-                    maximumLocalPlayers, maximumGamers, privateGamerSlots,
-                    sessionProperties);
-
-                //isServer = true;
-                session.AllowHostMigration = true;
-                session.AllowJoinInProgress = true;
-                flag = 3;
-            }
-        }
-
-        void FindGame()
-        { 
-            if (SignedInGamer.SignedInGamers.Count == 0)
-                    SignIn();
-                else if (SignedInGamer.SignedInGamers.Count == 1)
-                {
-                    int maximumLocalPlayers = 1;
-                    availableSessions = NetworkSession.Find(
-                        NetworkSessionType.SystemLink, maximumLocalPlayers,
-                        searchProperties);
-
-                    if (availableSessions.Count != 0)
-                     availableSession = availableSessions[sessionIndex];
-
-                    if (availableSession != null)
-                    {
-                        string HostGamerTag = availableSession.HostGamertag;
-                        int GamersInSession = availableSession.CurrentGamerCount;
-                        int OpenPrivateGamerSlots =
-                            availableSession.OpenPrivateGamerSlots;
-                        int OpenPublicGamerSlots =
-                            availableSession.OpenPublicGamerSlots;
-                        string sessionInformation =
-                            "Session available from gamertag " + HostGamerTag +
-                            "\n" + GamersInSession +
-                            " players already in this session. \n" +
-                            +OpenPrivateGamerSlots +
-                            " open private player slots available. \n" +
-                            +OpenPublicGamerSlots + " public player slots available.";
-                        GraphicsDevice.Clear(Color.CornflowerBlue);
-                        spriteBatch.DrawString(spr, sessionInformation,
-                            new Vector2(100, 50), Color.Gray);
-                    }
-                    else flag = 0;
-                }
-        }
-
-        void JoinGame()
-        {
-            if (availableSessions.Count - 1 >= sessionIndex)
-            {
-                session = NetworkSession.Join(availableSessions[sessionIndex]);
-
-                session.GamerJoined += new EventHandler<GamerJoinedEventArgs>(session_GamerJoined);
-                session.GamerLeft +=
-                    new EventHandler<GamerLeftEventArgs>(session_GamerLeft);
-                session.GameStarted +=
-                    new EventHandler<GameStartedEventArgs>(session_GameStarted);
-                session.GameEnded +=
-                    new EventHandler<GameEndedEventArgs>(session_GameEnded);
-                session.SessionEnded +=
-                    new EventHandler<NetworkSessionEndedEventArgs>(
-                        session_SessionEnded);
-            }
-        }
+        
 
         /// <summary>
         /// Allows the game to run logic such as updating the world,
@@ -200,12 +106,15 @@ namespace Tan4ik
         {
             // Allows the game to exit
             var kb = Keyboard.GetState();
-            if (kb.IsKeyDown(Keys.Escape))
+            if (kb.IsKeyDown(Keys.Q))
                 this.Exit();
-            if (!f && kb.IsKeyDown(Keys.Space))
+            if (kb.IsKeyDown(Keys.Escape))
+                flag = 0;
+            var mousepos = Mouse.GetState();
+            if (kb.IsKeyDown(Keys.Space))
                 flag = 1;
-            if (!f && kb.IsKeyDown(Keys.X))
-                flag = 2;
+
+
             // TODO: Add your update logic here
             if (flag==1)
             {
@@ -282,10 +191,7 @@ namespace Tan4ik
                     rotationc += 0.04f;
                 }
             }
-            else if (flag == 2)
-            {
-                FindGame();
-            }
+            
 
             base.Update(gameTime);
         }
@@ -306,8 +212,7 @@ namespace Tan4ik
             if (flag == 0)
             {
                 spriteBatch.DrawString(spr, "Press Space to start game", new Vector2(50, 50), Color.Gray);
-                spriteBatch.DrawString(spr, "Press X to try find available sessions", new Vector2(50, 70), Color.Gray);
-                spriteBatch.DrawString(spr, "Press G to create session", new Vector2(50, 90), Color.Gray);
+
             }
             else if(flag == 1)
             {
