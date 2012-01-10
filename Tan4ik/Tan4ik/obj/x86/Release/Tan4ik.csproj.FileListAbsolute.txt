@@ -1,0 +1,15 @@
+D:\NIKITA\CSharp\Tan4ik\Tan4ik\Tan4ik\bin\x86\Release\Content\tank.xnb
+D:\NIKITA\CSharp\Tan4ik\Tan4ik\Tan4ik\bin\x86\Release\Content\cannon.xnb
+D:\NIKITA\CSharp\Tan4ik\Tan4ik\Tan4ik\bin\x86\Release\Content\cannonball.xnb
+D:\NIKITA\CSharp\Tan4ik\Tan4ik\Tan4ik\bin\x86\Release\Content\spritefont.xnb
+D:\NIKITA\CSharp\Tan4ik\Tan4ik\Tan4ik\bin\x86\Release\Tan4ik.exe
+D:\NIKITA\CSharp\Tan4ik\Tan4ik\Tan4ik\bin\x86\Release\Tan4ik.pdb
+D:\NIKITA\CSharp\Tan4ik\Tan4ik\Tan4ik\obj\x86\Release\ResolveAssemblyReference.cache
+D:\NIKITA\CSharp\Tan4ik\Tan4ik\Tan4ik\obj\x86\Release\Microsoft.Xna.Framework.RuntimeProfile.txt
+D:\NIKITA\CSharp\Tan4ik\Tan4ik\Tan4ik\obj\x86\Release\Tan4ik.exe
+D:\NIKITA\CSharp\Tan4ik\Tan4ik\Tan4ik\obj\x86\Release\Tan4ik.pdb
+D:\NIKITA\CSharp\Tan4ik\Tan4ik\Tan4ik\bin\x86\Release\Tan4ik.exe.manifest
+D:\NIKITA\CSharp\Tan4ik\Tan4ik\Tan4ik\bin\x86\Release\Tan4ik.application
+D:\NIKITA\CSharp\Tan4ik\Tan4ik\Tan4ik\obj\x86\Release\Tan4ik.TrustInfo.xml
+D:\NIKITA\CSharp\Tan4ik\Tan4ik\Tan4ik\obj\x86\Release\Tan4ik.exe.manifest
+D:\NIKITA\CSharp\Tan4ik\Tan4ik\Tan4ik\obj\x86\Release\Tan4ik.application
