@@ -1,4 +1,0 @@
-Content\tank.xnb
-Content\cannon.xnb
-Content\cannonball.xnb
-Content\spritefont.xnb
