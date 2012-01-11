@@ -1,4 +1,13 @@
-﻿using System;
+﻿/* Copyright (C) 2012 by SkyForce (twice@eml.ru)
+ * Это произведение распространяется по лицензии 
+ * Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported. 
+ * Чтобы ознакомиться с экземпляром этой лицензии, 
+ * посетите http://creativecommons.org/licenses/by-nc-nd/3.0/
+ * или отправьте письмо на адрес Creative Commons: 
+ * 171 Second Street, Suite 300, San Francisco, California, 94105, USA.
+*/
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
