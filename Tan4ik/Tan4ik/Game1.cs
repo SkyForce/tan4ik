@@ -29,9 +29,13 @@ namespace Tan4ik
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        Texture2D tank, cannon, cannonball;
+        Texture2D tank, cannon, cannonball, back, textureNormal;
+
+        Effect deferred;
+
         Tank mytank;
         Shell shellPack;
+        Lights lights;
 
         int w, h, flag = 0;
 
@@ -73,10 +77,14 @@ namespace Tan4ik
             tank = Content.Load<Texture2D>("tank");
             cannon = Content.Load<Texture2D>("cannon");
             cannonball = Content.Load<Texture2D>("cannonball");
+            back = Content.Load<Texture2D>("test1");
+            textureNormal = Content.Load<Texture2D>("test1_map");
+
+            deferred = Content.Load<Effect>("deferred"); // загружаем шейдер
 
             mytank = new Tank(tank, cannon, new Vector2(500, 400));
             shellPack = new Shell(cannonball);
-
+            lights = new Lights(back, textureNormal, deferred);
 
         }
 
@@ -113,6 +121,7 @@ namespace Tan4ik
             {
                 mytank.Update(kb, gameTime);
                 shellPack.Update(kb, mytank.posTurret, mytank.turretRotation);
+                lights.Update(mytank.pos);
             }
             
 
@@ -130,11 +139,16 @@ namespace Tan4ik
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
+            if (flag == 1)
+            {
+                lights.Draw(spriteBatch);
+            }
+
             spriteBatch.Begin();
 
             if (flag == 0)
             {
-                spriteBatch.DrawString(spr, "Press Space to start game", new Vector2(50, 50), Color.Gray);
+                spriteBatch.DrawString(spr, "Press Space to start game", new Vector2(50, 50), Color.YellowGreen);
 
             }
             else if(flag == 1)
@@ -144,6 +158,8 @@ namespace Tan4ik
             }
             
             spriteBatch.End();
+
+            
 
             base.Draw(gameTime);
         }

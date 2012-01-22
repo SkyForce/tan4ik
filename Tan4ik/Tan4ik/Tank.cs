@@ -21,11 +21,11 @@ namespace Tan4ik
     class Tank
     {
         int w = 800, h = 600;
-        Vector2 pos, tankCenter, turretCenter;
+        public Vector2 pos, tankCenter, turretCenter;
         public Vector2 posTurret;
         float rotation;
         public float turretRotation;
-        const double a = 0.2;
+        const double a = 0.1;
         double currentSpeed;
         bool ok;
         float quadm;
@@ -98,6 +98,7 @@ namespace Tan4ik
             {
                 TurnTurretRight();
             }
+
         }
 
         bool isOKUp()
@@ -110,7 +111,7 @@ namespace Tan4ik
                     ((pos.Y < h) || (quadm >= 0 && quadm <= MathHelper.Pi)) &&
                     ((pos.X > 0) || (quadm >= MathHelper.PiOver2 && quadm <= 3 * MathHelper.PiOver2)) &&
                     ((pos.X < w) || (quadm <= MathHelper.PiOver2 || quadm >= 3 * MathHelper.PiOver2));
-
+            
             return ok;
         }
 
@@ -126,24 +127,24 @@ namespace Tan4ik
             return ok;
         }
 
-        void Acceleration(GameTime time, bool isTrenieOnly)
+        void Acceleration(GameTime time, bool onlyFriction)
         {
             if (isOKUp())
             {
-                if (!isTrenieOnly) currentSpeed += (2*a) / (time.ElapsedGameTime.Milliseconds);
-                else currentSpeed += a / (time.ElapsedGameTime.Milliseconds);
+                if (!onlyFriction) currentSpeed += (3*a) / (time.ElapsedGameTime.Milliseconds);
+                else currentSpeed += 2*a / (time.ElapsedGameTime.Milliseconds);
                 posTurret.X = pos.X -= (float)(currentSpeed * Math.Cos(rotation));
                 posTurret.Y = pos.Y -= (float)(currentSpeed * Math.Sin(rotation));
             }
             else currentSpeed = 0;
         }
 
-        void Brake(GameTime time, bool isTrenieOnly)
+        void Brake(GameTime time, bool onlyFriction)
         {
             if (isOKDown())
             {
-                if (!isTrenieOnly) currentSpeed -= (2*a) / (time.ElapsedGameTime.Milliseconds);
-                else currentSpeed -= a / (time.ElapsedGameTime.Milliseconds);
+                if (!onlyFriction) currentSpeed -= (3*a) / (time.ElapsedGameTime.Milliseconds);
+                else currentSpeed -= 2*a / (time.ElapsedGameTime.Milliseconds);
                 posTurret.X = pos.X -= (float)(currentSpeed * Math.Cos(rotation));
                 posTurret.Y = pos.Y -= (float)(currentSpeed * Math.Sin(rotation));
             }
