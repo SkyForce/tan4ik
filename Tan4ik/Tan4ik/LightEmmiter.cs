@@ -6,10 +6,6 @@
  * 444 Castro Street, Suite 900, Mountain View, California, 94041, USA.
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 

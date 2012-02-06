@@ -6,19 +6,10 @@
  * 444 Castro Street, Suite 900, Mountain View, California, 94041, USA.
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Media;
-using System.Collections;
-using Microsoft.Xna.Framework.Net;
-//using tan4ik;
+
 
 namespace Tan4ik
 {
@@ -28,26 +19,22 @@ namespace Tan4ik
     public class Game1 : Microsoft.Xna.Framework.Game
     {
         GraphicsDeviceManager graphics;
-        SpriteBatch spriteBatch;
-        Texture2D tank, cannon, cannonball, back, textureNormal;
+        SpriteBatch _spriteBatch;
+        Texture2D _tank1, _cannon1, _tank2, _cannon2, _cannonball1, _cannonball2, _back, _textureNormal;
 
-        Effect deferred;
+        Effect _deferred;
 
-        Tank mytank;
-        Shell shellPack;
-        Lights lights;
+        Tank _tankmodel1, _tankmodel2;
+        Lights _lights;
 
-        int w, h, flag = 0;
+        int _flag = 0;
 
-        DateTime prevdt=DateTime.Now;
-        SpriteFont spr;
+        SpriteFont _spr;
 
         public Game1()
         {
-            graphics = new GraphicsDeviceManager(this);
+            graphics = new GraphicsDeviceManager(this) {PreferredBackBufferWidth = 800, PreferredBackBufferHeight = 600};
             Content.RootDirectory = "Content";
-            w = graphics.PreferredBackBufferWidth = 800;
-            h = graphics.PreferredBackBufferHeight = 600;
         }
 
         /// <summary>
@@ -70,21 +57,25 @@ namespace Tan4ik
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
-            spriteBatch = new SpriteBatch(GraphicsDevice);
+            _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
-            spr = Content.Load<SpriteFont>("spritefont");
-            tank = Content.Load<Texture2D>("tank");
-            cannon = Content.Load<Texture2D>("cannon");
-            cannonball = Content.Load<Texture2D>("cannonball");
-            back = Content.Load<Texture2D>("test1");
-            textureNormal = Content.Load<Texture2D>("test1_map");
+            _spr = Content.Load<SpriteFont>("spritefont");
+            _tank1 = Content.Load<Texture2D>("tank1");
+            _tank2 = Content.Load<Texture2D>("tank2");
+            _cannon1 = Content.Load<Texture2D>("cannon1");
+            _cannon2 = Content.Load<Texture2D>("cannon2");
+            _cannonball1 = Content.Load<Texture2D>("cannonball1");
+            _cannonball2 = Content.Load<Texture2D>("cannonball2");
+            _back = Content.Load<Texture2D>("test1");
+            _textureNormal = Content.Load<Texture2D>("test1_map");
 
-            deferred = Content.Load<Effect>("deferred"); // загружаем шейдер
+            _deferred = Content.Load<Effect>("deferred");
 
-            mytank = new Tank(tank, cannon, new Vector2(500, 400));
-            shellPack = new Shell(cannonball);
-            lights = new Lights(back, textureNormal, deferred);
+            _tankmodel1 = new Tank(_tank1, _cannon1, _cannonball1, new Vector2(50, 550), 1,_spr);
+            _tankmodel2 = new Tank(_tank2, _cannon2, _cannonball2, new Vector2(750, 50), 2,_spr);
+            _lights = new Lights(_back, _textureNormal, _deferred);
+
 
         }
 
@@ -108,20 +99,25 @@ namespace Tan4ik
         {
             // Allows the game to exit
             var kb = Keyboard.GetState();
-            if (kb.IsKeyDown(Keys.Q))
+            if (kb.IsKeyDown(Keys.Q) && _flag == 0)
                 this.Exit();
             if (kb.IsKeyDown(Keys.Escape))
-                flag = 0;
+            {
+                _flag = 0;
+                _tankmodel1 = new Tank(_tank1, _cannon1, _cannonball1, new Vector2(50, 500), 1, _spr);
+                _tankmodel2 = new Tank(_tank2, _cannon2, _cannonball2, new Vector2(750, 100), 2,_spr);
+                _lights = new Lights(_back, _textureNormal, _deferred);
+            }
             if (kb.IsKeyDown(Keys.Space))
-                flag = 1;
+                _flag = 1;
 
 
             // TODO: Add your update logic here
-            if (flag==1)
+            if (_flag==1)
             {
-                mytank.Update(kb, gameTime);
-                shellPack.Update(kb, mytank.posTurret, mytank.turretRotation);
-                lights.Update(mytank.pos);
+                _tankmodel1.Update(kb, _tankmodel2.pos, 1, gameTime);
+                _tankmodel2.Update(kb, _tankmodel1.pos, 2, gameTime);
+                _lights.Update(_tankmodel1.pos, _tankmodel2.pos);
             }
             
 
@@ -139,25 +135,25 @@ namespace Tan4ik
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
-            if (flag == 1)
+            if (_flag == 1)
             {
-                lights.Draw(spriteBatch);
+                _lights.Draw(_spriteBatch);
             }
 
-            spriteBatch.Begin();
+            _spriteBatch.Begin();
 
-            if (flag == 0)
+            if (_flag == 0)
             {
-                spriteBatch.DrawString(spr, "Press Space to start game", new Vector2(50, 50), Color.YellowGreen);
+                _spriteBatch.DrawString(_spr, "Press Space to start game", new Vector2(50, 50), Color.YellowGreen);
 
             }
-            else if(flag == 1)
+            else if(_flag == 1)
             {
-                mytank.Draw(spriteBatch);
-                shellPack.Draw(spriteBatch);
+                _tankmodel1.Draw(_spriteBatch);
+                _tankmodel2.Draw(_spriteBatch);
             }
             
-            spriteBatch.End();
+            _spriteBatch.End();
 
             
 

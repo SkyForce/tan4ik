@@ -7,20 +7,15 @@
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using System.Collections;
-using Microsoft.Xna.Framework.Content;
 
 namespace Tan4ik
 {
     class Tank
     {
-        int w = 800, h = 600;
+        public int w = 800, h = 600, score = 0, typeKeys;
         public Vector2 pos, tankCenter, turretCenter;
         public Vector2 posTurret;
         float rotation;
@@ -31,77 +26,111 @@ namespace Tan4ik
         float quadm;
         const float ws = 0.05f;
         Texture2D tank, cannon;
+        bool forward, back, turnRight, turnLeft, turnTurretRight, turnTurretLeft;
+        SpriteFont spr;
+        Shell shellPack;
 
-        public Tank(Texture2D tank, Texture2D cannon, Vector2 pos)
+        public Tank(Texture2D tank, Texture2D cannon, Texture2D shell, Vector2 pos, int typeKeys, SpriteFont spr)
         {
             this.tank = tank;
             this.cannon = cannon;
-
+            shellPack = new Shell(shell);
 
             this.pos = pos;
             tankCenter = new Vector2(tank.Width / 2, tank.Height / 2);
-            rotation = 0;
             
             currentSpeed = 0;
 
-            
-            turretRotation = 0;
             posTurret = this.pos;
+
             turretCenter = new Vector2(tank.Width / 2 + 20, cannon.Height / 2);
 
-        }
+            if (typeKeys == 1)
+            {
+                rotation = MathHelper.Pi;
+                turretRotation = MathHelper.Pi;
+            }
+            else if(typeKeys == 2)
+            {
+                rotation = 0;
+                turretRotation = 0;
+            }
 
-        public void Update(KeyboardState kb, GameTime gameTime)
+            this.spr = spr;
+
+        }
+        
+        public void Update(KeyboardState kb, Vector2 enemypos, int typeKeys, GameTime gameTime)
         {
-            if (!kb.IsKeyDown(Keys.Up) && !kb.IsKeyDown(Keys.Down) && currentSpeed > 0 && isOKUp())
+            score = shellPack.Update(kb, typeKeys, pos, rotation, turretRotation, enemypos, score);
+            this.typeKeys = typeKeys;
+            if (typeKeys == 1)
+            {
+                forward = kb.IsKeyDown(Keys.W);
+                back = kb.IsKeyDown(Keys.S);
+                turnRight = kb.IsKeyDown(Keys.D);
+                turnLeft = kb.IsKeyDown(Keys.A);
+                turnTurretRight = kb.IsKeyDown(Keys.E);
+                turnTurretLeft = kb.IsKeyDown(Keys.Q);
+            }
+            else if (typeKeys == 2)
+            {
+                forward = kb.IsKeyDown(Keys.NumPad5);
+                back = kb.IsKeyDown(Keys.NumPad2);
+                turnRight = kb.IsKeyDown(Keys.NumPad3);
+                turnLeft = kb.IsKeyDown(Keys.NumPad1);
+                turnTurretRight = kb.IsKeyDown(Keys.NumPad6);
+                turnTurretLeft = kb.IsKeyDown(Keys.NumPad4);
+            }
+            if (!forward && !back && currentSpeed > 0 && IsOkUp())
                 Brake(gameTime, true);
-            else if (!kb.IsKeyDown(Keys.Up) && !kb.IsKeyDown(Keys.Down) && currentSpeed > 0 && !isOKUp())
+            else if (!forward && !back && currentSpeed > 0 && !IsOkUp())
                 currentSpeed = 0;
 
-            if (!kb.IsKeyDown(Keys.Up) && !kb.IsKeyDown(Keys.Down) && currentSpeed < 0 && isOKDown())
+            if (!forward && !back && currentSpeed < 0 && IsOkDown())
                 Acceleration(gameTime, true);
-            else if (!kb.IsKeyDown(Keys.Up) && !kb.IsKeyDown(Keys.Down) && currentSpeed < 0 && !isOKDown())
+            else if (!forward && !back && currentSpeed < 0 && !IsOkDown())
                currentSpeed = 0;
 
-            if (kb.IsKeyDown(Keys.Up) && isOKUp())
+            if (forward && IsOkUp())
             {
 
                 Acceleration(gameTime, false);
 
             }
-            else if (!isOKUp())
+            else if (!IsOkUp())
                 currentSpeed = 0;
 
 
-            if (kb.IsKeyDown(Keys.Down) && isOKDown())
+            if (back && IsOkDown())
             {
                 Brake(gameTime, false);
             }
-            else if (!isOKDown())
+            else if (!IsOkDown())
                 currentSpeed = 0;
 
-            if (kb.IsKeyDown(Keys.Right))
+            if (turnRight)
             {
                 TurnRight();
             }
 
-            if (kb.IsKeyDown(Keys.Left))
+            if (turnLeft)
             {
                 TurnLeft();
             }
 
-            if (kb.IsKeyDown(Keys.A))
+            if (turnTurretLeft)
             {
                 TurnTurretLeft();
             }
-            if (kb.IsKeyDown(Keys.D))
+            if (turnTurretRight)
             {
                 TurnTurretRight();
             }
 
         }
 
-        bool isOKUp()
+        bool IsOkUp()
         {
             quadm = (rotation % MathHelper.TwoPi);
             if (quadm < 0)
@@ -115,7 +144,7 @@ namespace Tan4ik
             return ok;
         }
 
-        bool isOKDown()
+        bool IsOkDown()
         {
             quadm = (rotation % MathHelper.TwoPi);
             if (quadm < 0)
@@ -129,7 +158,7 @@ namespace Tan4ik
 
         void Acceleration(GameTime time, bool onlyFriction)
         {
-            if (isOKUp())
+            if (IsOkUp())
             {
                 if (!onlyFriction) currentSpeed += (3*a) / (time.ElapsedGameTime.Milliseconds);
                 else currentSpeed += 2*a / (time.ElapsedGameTime.Milliseconds);
@@ -141,7 +170,7 @@ namespace Tan4ik
 
         void Brake(GameTime time, bool onlyFriction)
         {
-            if (isOKDown())
+            if (IsOkDown())
             {
                 if (!onlyFriction) currentSpeed -= (3*a) / (time.ElapsedGameTime.Milliseconds);
                 else currentSpeed -= 2*a / (time.ElapsedGameTime.Milliseconds);
@@ -177,6 +206,9 @@ namespace Tan4ik
         {
             spriteBatch.Draw(tank, pos, null, Color.White, rotation, tankCenter, 1f, SpriteEffects.None, 1f);
             spriteBatch.Draw(cannon, posTurret, null, Color.White, turretRotation, turretCenter, 1f, SpriteEffects.None, 1f);
+            shellPack.Draw(spriteBatch);
+            if (typeKeys == 1) spriteBatch.DrawString(spr, "Score: " + score, new Vector2(10, 10), Color.Green);
+            if (typeKeys == 2) spriteBatch.DrawString(spr, "Score: " + score, new Vector2(700, 10), Color.Red);
         }
 
     }

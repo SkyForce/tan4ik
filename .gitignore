@@ -5,3 +5,5 @@ obj/
 *.cachefile
 *.pfx
 *.idc
+/Bitmap-conv/
+/_ReSharper.Tan4ik/

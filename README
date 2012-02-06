@@ -1,9 +1,14 @@
-﻿Tan4ik is a simple game like popular game "Battle City" or "tanchiki".
+﻿Tan4ik is a simple 1 vs 1 tank-game on one keyboard.
 
 Controls:
-Arrows - move tank
-A, D - move turret
-Space - shoot
+Green Player:
+	W, A, S, D - move tank
+	Q, E - move turret
+	Left Shift - shoot
+Red Player:
+	NumPad: 5, 2, 1, 3 - move tank
+	NumPad: 4, 6 - move turret
+	Enter - shoot
 
 License:
 Copyright (C) 2012 by SkyForce (twice@eml.ru)

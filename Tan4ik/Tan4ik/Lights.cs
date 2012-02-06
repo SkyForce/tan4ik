@@ -6,10 +6,6 @@
  * 444 Castro Street, Suite 900, Mountain View, California, 94041, USA.
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 
@@ -22,7 +18,7 @@ namespace Tan4ik
         float lightZ;
         float lightC;
         EffectParameter lightParameter;
-        LightEmmiter[] lights = new LightEmmiter[1];
+        LightEmmiter[] lights = new LightEmmiter[2];
         Texture2D back, normal;
         Effect deferred;
 
@@ -37,10 +33,16 @@ namespace Tan4ik
             lightC = 1f;
 
             lights[0] = new LightEmmiter();
-            lights[0].color = new Vector3(0f, 1f, 1f);
-            lights[0].position = new Vector3(500, 400, lightZ);
+            lights[0].color = new Vector3(0f, 1f, 0f);
+            lights[0].position = new Vector3(100, 400, lightZ);
             lights[0].radius = lightRadius;
             lights[0].corrector = lightC;
+
+            lights[1] = new LightEmmiter();
+            lights[1].color = new Vector3(1f, 0f, 0f);
+            lights[1].position = new Vector3(500, 400, lightZ);
+            lights[1].radius = lightRadius;
+            lights[1].corrector = lightC;
 
             deferred.CurrentTechnique = deferred.Techniques["Deferred"];
 
@@ -54,14 +56,15 @@ namespace Tan4ik
             lightParameter = deferred.Parameters["lights"];
         }
 
-        public void Update(Vector2 pos)
+        public void Update(Vector2 pos1, Vector2 pos2)
         {
             for (int i = 0; i < lights.Length; i++)
             {
                 LightEmmiter l = lights[i];
                 l.UpdateEffect(lightParameter.Elements[i]);
             }
-            lights[0].position = new Vector3(pos.X, pos.Y, lightZ);
+            lights[0].position = new Vector3(pos1.X, pos1.Y, lightZ);
+            lights[1].position = new Vector3(pos2.X, pos2.Y, lightZ);
 
         }
 
